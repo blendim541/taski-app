@@ -1,5 +1,15 @@
 # Setup
 
+## How the app is built
+
+- **Database (MySQL):** Stores users, products, and orders. You run the schema once to create tables and sample data.
+- **Backend (Node + Express):** Runs on port 3000. Connects to MySQL and exposes API routes: GET products, POST login, POST orders.
+- **Frontend (React + Vite):** Runs on port 5173. Shows pages (Home, Products, Login, Order) and calls the backend via `/api/...`. Vite proxies `/api` to the backend so the browser doesn’t block requests.
+
+Run the database and schema first, then the backend, then the frontend.
+
+---
+
 ## Database (DBngin + TablePlus)
 
 1. Install DBngin, add a MySQL server, set root password, start it (port 3306).

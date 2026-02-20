@@ -1,14 +1,19 @@
+/**
+ * LOGIN PAGE — Form to log in.
+ * User types username and password. On submit we call login() (POST /api/login).
+ * If the backend returns a user, we show "Logged in as ...". If not, we show the error.
+ */
 import { useState } from 'react';
 import { login } from '../api';
 
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState(null);
-  const [user, setUser] = useState(null);
+  const [message, setMessage] = useState(null);  // Success or error text
+  const [user, setUser] = useState(null);       // After login, we store the user here
 
   async function handleSubmit(e) {
-    e.preventDefault();
+    e.preventDefault(); // Don't reload the page
     setMessage(null);
     try {
       const data = await login(username, password);

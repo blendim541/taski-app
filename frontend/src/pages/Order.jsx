@@ -1,3 +1,9 @@
+/**
+ * ORDER PAGE — Place an order.
+ * We load products for the dropdown. User picks product, quantity (capped by stock),
+ * and user ID. On submit we call createOrder() (POST /api/orders). The backend
+ * checks stock, inserts the order, and decreases product stock.
+ */
 import { useState, useEffect } from 'react';
 import { getProducts, createOrder } from '../api';
 
@@ -9,6 +15,7 @@ export default function Order() {
   const [message, setMessage] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Load products when the page opens (for the dropdown)
   useEffect(() => {
     getProducts()
       .then(setProducts)
@@ -19,6 +26,7 @@ export default function Order() {
   const selectedProduct = products.find((p) => p.id === Number(product_id));
   const maxQty = selectedProduct ? (selectedProduct.stock ?? 0) : 0;
 
+  // When user changes product or maxQty changes, clamp quantity to 1..maxQty
   useEffect(() => {
     if (maxQty > 0 && (Number(quantity) > maxQty || Number(quantity) < 1)) {
       setQuantity(Math.min(Math.max(1, Number(quantity) || 1), maxQty));
@@ -37,7 +45,7 @@ export default function Order() {
       await createOrder(Number(user_id), Number(product_id), qty);
       setMessage('Order created successfully.');
       setQuantity(1);
-      getProducts().then(setProducts);
+      getProducts().then(setProducts); // Refresh product list (stock has changed)
     } catch (err) {
       setMessage('Error: ' + err.message);
     }

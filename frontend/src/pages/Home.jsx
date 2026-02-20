@@ -1,3 +1,7 @@
+/**
+ * HOME PAGE — First page you see.
+ * Simple welcome and links to Products, Login, and Place order.
+ */
 import { Link } from 'react-router-dom';
 
 export default function Home() {

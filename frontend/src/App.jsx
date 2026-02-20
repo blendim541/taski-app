@@ -1,3 +1,8 @@
+/**
+ * APP — Main layout and routing.
+ * The nav links stay visible on every page. When you click a link,
+ * only the content inside <Routes> changes (Home, Products, Login, or Order).
+ */
 import { Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
 import Products from './pages/Products';

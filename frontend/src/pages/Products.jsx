@@ -1,11 +1,17 @@
+/**
+ * PRODUCTS PAGE — Lists all products from the database.
+ * On load we call getProducts() (which hits GET /api/products). We show
+ * loading until the data arrives, then render name, category, price, and stock.
+ */
 import { useState, useEffect } from 'react';
 import { getProducts } from '../api';
 
 export default function Products() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [products, setProducts] = useState([]);   // List of products from API
+  const [loading, setLoading] = useState(true);    // true while we're fetching
+  const [error, setError] = useState(null);       // Error message if fetch fails
 
+  // Run once when the component mounts (empty dependency array [])
   useEffect(() => {
     getProducts()
       .then(setProducts)
