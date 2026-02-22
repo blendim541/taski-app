@@ -118,6 +118,49 @@ app.post('/api/orders', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+//route per me shtu product
+app.post("/api/products", async (req, res) => {
+  const { name, price, stock } = req.body;
+
+  try {
+    await pool.query(
+      "INSERT INTO products (name, price, stock) VALUES (?, ?, ?)",
+      [name, price, stock]
+    );
+
+    res.status(201).json({ message: "Product added" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+//route per edit product
+app.put("/api/products/:id", async (req, res) => {
+  const { name, price, stock } = req.body;
+
+  try {
+    await pool.query(
+      "UPDATE products SET name=?, price=?, stock=? WHERE id=?",
+      [name, price, stock, req.params.id]
+    );
+
+    res.json({ message: "Product updated" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+//route per delete produkt
+app.delete("/api/products/:id", async (req, res) => {
+  try {
+    await pool.query(
+      "DELETE FROM products WHERE id=?",
+      [req.params.id]
+    );
+
+    res.json({ message: "Product deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Start listening for HTTP requests
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
