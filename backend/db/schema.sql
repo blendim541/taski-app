@@ -44,6 +44,11 @@ CREATE TABLE orders (
   FOREIGN KEY (user_id) REFERENCES users(id),
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
+CREATE TABLE admins (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(50),
+  password VARCHAR(255)
+);
 
 -- Insert some sample products so the app has data to show
 INSERT INTO products (name, category, price)
