@@ -119,23 +119,37 @@ app.post('/api/orders', async (req, res) => {
   }
 });
 //route per me shtu product
-app.post("/api/products", async (req, res) => {
-  const { name, price, stock } = req.body;
+app.post('/api/products', async (req, res) => {
+    const { name, category, price, stock } = req.body || {};
 
-  try {
-    await pool.query(
-      "INSERT INTO products (name, price, stock) VALUES (?, ?, ?)",
-      [name, price, stock]
-    );
+    try {
+        if (!name || name.toString().trim() === '') {
+            return res.status(400).json({ message: 'name is required' });
+        }
 
-    res.status(201).json({ message: "Product added" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+        const p = Number(price);
+        const s = Number(stock);
+
+        if (isNaN(p) || p < 0 || isNaN(s) || s < 0) {
+            return res.status(400).json({ message: 'numrat duhet te jen pozitiv' });
+        }
+
+        await pool.query(
+            'INSERT INTO products (name, category, price, stock) VALUES (?, ?, ?, ?)',
+            [name.toString().trim(), category || null, p, s]
+        );
+
+        res.status(201).json({ message: 'produkti u shtu' });
+
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+
+
 });
 //route per edit product
 app.put("/api/products/:id", async (req, res) => {
-  const { name, price, stock } = req.body;
+  const { name, price, stock } = req.body || {};
 
   try {
     await pool.query(
@@ -149,15 +163,17 @@ app.put("/api/products/:id", async (req, res) => {
   }
 });
 //route per delete produkt
-app.delete("/api/products/:id", async (req, res) => {
+app.delete('/api/products/:id', async (req, res) => {
   try {
-    await pool.query(
-      "DELETE FROM products WHERE id=?",
-      [req.params.id]
-    );
-
-    res.json({ message: "Product deleted" });
+    const [result] = await pool.query('DELETE FROM products WHERE id=?', [req.params.id]);
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    res.json({ message: 'Product deleted' });
   } catch (err) {
+    if (err.code === 'ER_ROW_IS_REFERENCED_2' || err.errno === 1451) {
+      return res.status(409).json({ message: 'Cannot delete product: it has orders' });
+    }
     res.status(500).json({ error: err.message });
   }
 });
