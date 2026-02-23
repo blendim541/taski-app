@@ -118,6 +118,72 @@ app.post('/api/orders', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+//routes for admin
+app.post('/api/products', async (req, res) => {
+  const { name, price, stock, category } = req.body || {};
+
+  try {
+    if (!name || name.toString().trim() === '') {
+      return res.status(400).json({ message: 'Product name required' });
+    }
+
+    if (!category || category.toString().trim() === '') {
+      return res.status(400).json({ message: 'Category required' });
+    }
+
+    const p = Number(price);
+    const s = Number(stock);
+
+    if (isNaN(p) || isNaN(s)) {
+      return res.status(400).json({
+        message: 'Price and stock must be numbers'
+      });
+    }
+
+    await pool.query(
+      'INSERT INTO products (name, price, stock, category) VALUES (?, ?, ?, ?)',
+      [name.toString().trim(), p, s, category.toString().trim()]
+    );
+
+    res.status(201).json({ message: 'Product created successfully' });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// UPDATE PRODUCT
+app.put('/api/products/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, price, stock, category } = req.body || {};
+
+  try {
+    await pool.query(
+      'UPDATE products SET name=?, price=?, stock=?, category=? WHERE id=?',
+      [name, price, stock, category, id]
+    );
+
+    res.json({ message: 'Product updated successfully' });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// DELETE PRODUCT
+app.delete('/api/products/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await pool.query('DELETE FROM products WHERE id=?', [id]);
+    res.json({ message: 'Product deleted successfully' });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 // Start listening for HTTP requests
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
