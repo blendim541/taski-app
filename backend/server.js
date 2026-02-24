@@ -155,21 +155,30 @@ app.post('/api/products', async (req, res) => {
 
 // UPDATE PRODUCT
 app.put('/api/products/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name, price, stock, category } = req.body || {};
-
+  const { name, category, price, stock } = req.body || {};
+  const id = req.params.id;
   try {
-    await pool.query(
-      'UPDATE products SET name=?, price=?, stock=?, category=? WHERE id=?',
-      [name, price, stock, category, id]
+    if (!name || name.toString().trim() === '') {
+      return res.status(400).json({ message: 'Name is required' });
+    }
+    const p = Number(price);
+    const s = Number(stock);
+    if (isNaN(p) || p < 0 || isNaN(s) || s < 0) {
+      return res.status(400).json({ message: 'Price and stock must be non-negative numbers' });
+    }
+    const [result] = await pool.query(
+      'UPDATE products SET name=?, category=?, price=?, stock=? WHERE id=?',
+      [name.toString().trim(), category || null, p, s, id]
     );
-
-    res.json({ message: 'Product updated successfully' });
-
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    res.json({ message: 'Product updated' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
+
 
 
 // DELETE PRODUCT
