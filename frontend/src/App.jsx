@@ -9,6 +9,7 @@ import Products from './pages/Products';
 import Login from './pages/Login';
 import Order from './pages/Order';
 import Admin from "./pages/Admin";
+import User from "./pages/User";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/order" element={<Order />} />
           <Route path="/admin" element={<Admin />} />
+          <Route path="/user" element={<User />} />
         </Routes>
       </main>
     </>
