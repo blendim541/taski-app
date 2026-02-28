@@ -66,7 +66,7 @@ app.post('/api/login', async (req, res) => {
   try {
     // ? and [username, password] = parameterized query (safe from SQL injection)
     const [rows] = await pool.query(
-      'SELECT id, username FROM users WHERE username = ? AND password = ?',
+      'SELECT id, username, role FROM users WHERE username = ? AND password = ?'
       [username, password]
     );
     if (rows.length > 0) {
