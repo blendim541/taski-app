@@ -20,7 +20,8 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(100) NOT NULL,
-  password VARCHAR(255) NOT NULL
+  password VARCHAR(255) NOT NULL,
+  role VARCHAR(20) DEFAULT 'user'
 );
 
 -- Table: products — items we sell (name, category, price, how many in stock)
@@ -54,5 +55,5 @@ VALUES
 ('Shampon', 'Higjene', 4.50);
 
 -- Insert one user so you can log in (username: admin, password: admin)
-INSERT INTO users (username, password)
-VALUES ('admin', 'admin');
+INSERT INTO users (username, password, role)
+VALUES ('admin', 'admin', 'admin');
